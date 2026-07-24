@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkAdd
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Computer
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.OpenInBrowser
@@ -91,6 +92,7 @@ fun AttendanceWebView(
     var webView: WebView? by remember { mutableStateOf(null) }
     var currentUrlInput by remember(url) { mutableStateOf(url) }
     var isLoading by remember { mutableStateOf(false) }
+    var isDesktopMode by remember { mutableStateOf(true) } // Windows Desktop User-Agent spoofing by default
     var hasError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
@@ -257,6 +259,25 @@ fun AttendanceWebView(
                     tint = Color(0xFF38BDF8)
                 )
             }
+
+            IconButton(
+                onClick = {
+                    isDesktopMode = !isDesktopMode
+                    webView?.settings?.userAgentString = if (isDesktopMode) {
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    } else null
+                    webView?.reload()
+                },
+                modifier = Modifier
+                    .size(36.dp)
+                    .testTag("toggle_desktop_mode_button")
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Computer,
+                    contentDescription = "Toggle Desktop User-Agent",
+                    tint = if (isDesktopMode) Color(0xFF10B981) else Color(0xFF64748B)
+                )
+            }
         }
 
         // Quick Intranet Bookmarks Row
@@ -333,6 +354,9 @@ fun AttendanceWebView(
                             useWideViewPort = true
                             loadWithOverviewMode = true
                             allowFileAccess = true
+                            if (isDesktopMode) {
+                                userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                            }
                         }
 
                         webViewClient = object : WebViewClient() {

@@ -1,0 +1,6 @@
+{
+  "name": "XG Connect",
+  "description": "One-tap Sophos XG OpenVPN connection with dynamic TOTP authentication and direct access to internal attendance portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
